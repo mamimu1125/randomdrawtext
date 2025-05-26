@@ -51,6 +51,30 @@
             margin-right: auto;
         }
         
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+                max-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .category-btn {
+                padding: 0.8rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .emoji {
+                font-size: 1.2rem;
+            }
+        }
+        
         .category-btn {
             background: white;
             border: 2px solid #ddd;
@@ -283,6 +307,22 @@
                 margin-bottom: 1rem;
             }
             
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.8rem;
+                max-width: 100%;
+            }
+            
+            .difficulty-buttons {
+                gap: 0.3rem;
+            }
+            
+            .difficulty-btn {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.8rem;
+                min-width: 70px;
+            }
+            
             .topic-container {
                 height: 50vh;
             }
@@ -293,6 +333,32 @@
             
             .topic-emoji {
                 font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .category-btn {
+                padding: 0.8rem 0.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .emoji {
+                font-size: 1.2rem;
+            }
+            
+            .difficulty-btn {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.7rem;
+                min-width: 60px;
+            }
+            
+            .difficulty-emoji {
+                font-size: 1rem;
             }
         }
     </style>
