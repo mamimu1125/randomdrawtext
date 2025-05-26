@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ランダム描画チャレンジ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 100vw;
+            min-height: 100vh;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            color: #222;
+        }
+        
+        .category-selection {
+            display: block;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .category-btn {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #333;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .category-btn:hover {
+            border-color: #666;
+            background: #f9f9f9;
+        }
+        
+        .category-btn.selected {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+        
+        .emoji {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .difficulty-section {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .difficulty-label {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .difficulty-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty-btn {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 0.8rem 1.2rem;
+            color: #333;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 80px;
+        }
+        
+        .difficulty-btn:hover {
+            border-color: #666;
+            background: #f9f9f9;
+        }
+        
+        .difficulty-btn.active {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+        
+        .start-btn {
+            background: #333;
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 2rem;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+            background: #333;
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 2rem;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+        
+        .start-btn:hover {
+            background: #555;
+        }
+        
+        .start-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .challenge-area {
+            display: none;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .topic-container {
+            width: 100%;
+            height: 60vh;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .topic-display {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .topic-emoji {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+        }
+        
+        .topic-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .topic-description {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+        
+        .timer-section {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .timer-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .timer-btn {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            color: #333;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .timer-btn:hover {
+            border-color: #666;
+        }
+        
+        .timer-btn.active {
+            background: #333;
+            color: white;
+            border-color: #333;
+        }
+        
+        .timer-display {
+            background: #333;
+            color: white;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            display: inline-block;
+        }
+        
+        .timer-display.warning {
+            background: #666;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .control-btn:hover {
+            border-color: #666;
+            background: #f9f9f9;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+            }
+            
+            .topic-container {
+                height: 50vh;
+            }
+            
+            .topic-text {
+                font-size: 2rem;
+            }
+            
+            .topic-emoji {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 ランダム描画チャレンジ</h1>
+        
+        <div class="category-selection">
+            <div class="category-grid">
+                <button class="category-btn" data-category="animals">
+                    <span class="emoji">🐱</span>
+                    動物
+                </button>
+                <button class="category-btn" data-category="nature">
+                    <span class="emoji">🌲</span>
+                    自然・風景
+                </button>
+                <button class="category-btn" data-category="food">
+                    <span class="emoji">🍎</span>
+                    食べ物
+                </button>
+                <button class="category-btn" data-category="objects">
+                    <span class="emoji">🎯</span>
+                    物・道具
+                </button>
+                <button class="category-btn" data-category="people">
+                    <span class="emoji">👥</span>
+                    人物
+                </button>
+                <button class="category-btn" data-category="scenes">
+                    <span class="emoji">🏞️</span>
+                    シーン
+                </button>
+            </div>
+            
+            <div class="difficulty-section">
+                <p class="difficulty-label">難易度</p>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn active" data-difficulty="easy">
+                        <span class="difficulty-emoji">😊</span>
+                        かんたん
+                    </button>
+                    <button class="difficulty-btn" data-difficulty="medium">
+                        <span class="difficulty-emoji">🤔</span>
+                        ふつう
+                    </button>
+                    <button class="difficulty-btn" data-difficulty="hard">
+                        <span class="difficulty-emoji">😤</span>
+                        むずかしい
+                    </button>
+                </div>
+            </div>
+            
+            <button class="start-btn" id="startBtn" disabled>
+                チャレンジ開始！
+            </button>
+        </div>
+        
+        <div class="challenge-area">
+            <div class="topic-container">
+                <div class="topic-display">
+                    <div class="topic-emoji" id="topicEmoji">🎨</div>
+                    <div class="topic-text" id="topicText">お題が表示されます</div>
+                    <div class="topic-description" id="topicDescription">アナログでも、デジタルでも、お好きな方法で描いてください</div>
+                </div>
+            </div>
+            
+            <div class="timer-section">
+                <div class="timer-buttons">
+                    <button class="timer-btn" data-time="60">1分</button>
+                    <button class="timer-btn active" data-time="300">5分</button>
+                    <button class="timer-btn" data-time="600">10分</button>
+                    <button class="timer-btn" data-time="1800">30分</button>
+                    <button class="timer-btn" data-time="0">制限なし</button>
+                </div>
+                <div class="timer-display" id="timerDisplay">05:00</div>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" id="newTopicBtn">新しいお題</button>
+                <button class="control-btn" id="backBtn">カテゴリ選択に戻る</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // グローバル変数
+        let selectedCategory = '';
+        let selectedDifficulty = 'easy';
+        let timerInterval = null;
+        let timeLeft = 0;
+        let selectedTime = 300; // デフォルト5分
+        
+        // ランダム組み合わせ用の単語リスト
+        const wordSets = {
+            animals: {
+                subjects: ['猫', '犬', '鳥', 'ライオン', 'ゾウ', 'うさぎ', '魚', '蝶', 'キリン', 'パンダ', '馬', '羊', 'カエル', 'ペンギン', 'フクロウ', 'リス', 'ハムスター', 'カメ'],
+                actions: ['走っている', '眠っている', '食べている', '遊んでいる', '泳いでいる', '飛んでいる', '座っている', '歩いている', '鳴いている', '跳ねている', '隠れている', '見つめている'],
+                modifiers: ['小さな', '大きな', '可愛い', '元気な', '眠そうな', '怒った', '笑顔の', '悲しそうな', '太った', '痩せた', '毛深い', '色とりどりの']
+            },
+            nature: {
+                subjects: ['木', '花', '山', '海', '川', '雲', '太陽', '月', '星', '雨', '雪', '風', '草原', '森', '砂漠', '滝', '湖', '島'],
+                actions: ['揺れている', '光っている', '流れている', '咲いている', '散っている', '輝いている', '沈んでいる', '昇っている', '降っている', '吹いている'],
+                modifiers: ['美しい', '静かな', '激しい', '穏やかな', '暗い', '明るい', '大きな', '小さな', '古い', '新鮮な', '神秘的な', '壮大な']
+            },
+            food: {
+                subjects: ['りんご', 'パン', 'ケーキ', 'ピザ', 'ラーメン', 'サンドイッチ', 'アイス', 'チョコ', '寿司', 'カレー', 'パスタ', 'ドーナツ', 'コーヒー', 'ジュース'],
+                actions: ['溶けている', '湯気が出ている', '焼けている', '冷えている', '盛られている', '切られている', '並んでいる'],
+                modifiers: ['美味しそうな', '熱々の', '冷たい', '甘い', '辛い', 'カラフルな', '大きな', '小さな', '手作りの', '焼きたての']
+            },
+            objects: {
+                subjects: ['本', '時計', 'ギター', 'カメラ', 'ランプ', '椅子', '傘', 'メガネ', 'カバン', 'ペン', '帽子', '靴', 'ボール', '箱'],
+                actions: ['置かれている', '壊れている', '光っている', '動いている', '倒れている', '飛んでいる', '転がっている'],
+                modifiers: ['古い', '新しい', '大きな', '小さな', '美しい', '壊れた', '光る', '重い', '軽い', 'カラフルな', 'シンプルな']
+            },
+            people: {
+                subjects: ['子供', '大人', 'お年寄り', '赤ちゃん', '男性', '女性', '家族', '友達', '兄弟', '姉妹'],
+                actions: ['笑っている', '泣いている', '走っている', '歩いている', '座っている', '立っている', '踊っている', '歌っている', '読んでいる', '話している', '考えている', '眠っている'],
+                modifiers: ['幸せそうな', '悲しそうな', '元気な', '疲れた', '若い', '年老いた', '背の高い', '背の低い', '優しい', '厳しい']
+            },
+            scenes: {
+                subjects: ['公園', '家', '学校', '駅', 'カフェ', '図書館', '病院', '店', '市場', '海辺', '山頂', '街角', '部屋', '庭'],
+                actions: ['賑わっている', '静まっている', '輝いている', '暗くなっている', '雨に濡れている', '雪に覆われている'],
+                modifiers: ['静かな', '賑やかな', '美しい', '古い', '新しい', '広い', '狭い', '明るい', '暗い', '温かい', '冷たい', '懐かしい']
+            }
+        };
+        
+        // 初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            // カテゴリ選択
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedCategory = this.dataset.category;
+                    checkStartButton();
+                });
+            });
+            
+            // 難易度選択
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedDifficulty = this.dataset.difficulty;
+                });
+            });
+            
+            // タイマー選択
+            document.querySelectorAll('.timer-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.timer-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedTime = parseInt(this.dataset.time);
+                    
+                    if (selectedTime === 0) {
+                        document.getElementById('timerDisplay').textContent = '--:--';
+                    } else {
+                        updateTimerDisplay(selectedTime);
+                    }
+                });
+            });
+            
+            // スタートボタン
+            document.getElementById('startBtn').addEventListener('click', startChallenge);
+            
+            // コントロールボタン
+            document.getElementById('newTopicBtn').addEventListener('click', getNewTopic);
+            document.getElementById('backBtn').addEventListener('click', backToCategories);
+        }
+        
+        function checkStartButton() {
+            document.getElementById('startBtn').disabled = !selectedCategory;
+        }
+        
+        function startChallenge() {
+            document.querySelector('.category-selection').style.display = 'none';
+            document.querySelector('.challenge-area').style.display = 'flex';
+            getNewTopic();
+        }
+        
+        function getNewTopic() {
+            stopTimer();
+            
+            const words = wordSets[selectedCategory] || wordSets.animals;
+            
+            let randomPattern;
+            
+            // 難易度に応じてパターンを選択
+            if (selectedDifficulty === 'easy') {
+                // かんたん：シンプルな単語のみ
+                const randomSubject = words.subjects[Math.floor(Math.random() * words.subjects.length)];
+                randomPattern = randomSubject;
+                
+            } else if (selectedDifficulty === 'medium') {
+                // ふつう：修飾語か動作を1つ追加
+                const randomSubject = words.subjects[Math.floor(Math.random() * words.subjects.length)];
+                const randomModifier = words.modifiers[Math.floor(Math.random() * words.modifiers.length)];
+                const randomAction = words.actions[Math.floor(Math.random() * words.actions.length)];
+                
+                const patterns = [
+                    `${randomModifier}${randomSubject}`,
+                    `${randomAction}${randomSubject}`
+                ];
+                
+                randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+                
+            } else {
+                // むずかしい：複雑な組み合わせ
+                const randomSubject = words.subjects[Math.floor(Math.random() * words.subjects.length)];
+                const randomModifier = words.modifiers[Math.floor(Math.random() * words.modifiers.length)];
+                const randomAction = words.actions[Math.floor(Math.random() * words.actions.length)];
+                
+                const patterns = [
+                    `${randomAction}${randomModifier}${randomSubject}`,
+                    `${randomModifier}${randomSubject}が${randomAction}ところ`,
+                    `${randomModifier}${randomSubject}と${randomModifier}${words.subjects[Math.floor(Math.random() * words.subjects.length)]}`
+                ];
+                
+                randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+            }
+            
+            // カテゴリごとの絵文字
+            const categoryEmojis = {
+                animals: '🐾',
+                nature: '🌿', 
+                food: '🍽️',
+                objects: '📦',
+                people: '👤',
+                scenes: '🎭'
+            };
+            
+            // 難易度表示
+            const difficultyEmojis = {
+                easy: '😊',
+                medium: '🤔',
+                hard: '😤'
+            };
+            
+            const emoji = categoryEmojis[selectedCategory] || '🎨';
+            const difficultyEmoji = difficultyEmojis[selectedDifficulty];
+            
+            document.getElementById('topicEmoji').textContent = `${emoji} ${difficultyEmoji}`;
+            document.getElementById('topicText').textContent = randomPattern;
+            document.getElementById('topicDescription').textContent = `${selectedDifficulty === 'easy' ? 'シンプルに' : selectedDifficulty === 'medium' ? '程よく詳しく' : 'こだわって'}描いてみましょう！`;
+            
+            console.log(`ランダムお題（${selectedDifficulty}）:`, randomPattern);
+            
+            // タイマーを開始
+            startTimer();
+        }
+        
+        function backToCategories() {
+            document.querySelector('.challenge-area').style.display = 'none';
+            document.querySelector('.category-selection').style.display = 'flex';
+            stopTimer();
+        }
+        
+        // タイマー機能
+        function startTimer() {
+            if (selectedTime === 0) return;
+            
+            timeLeft = selectedTime;
+            updateTimerDisplay(timeLeft);
+            
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay(timeLeft);
+                
+                const timerDisplay = document.getElementById('timerDisplay');
+                if (timeLeft <= 30 && timeLeft > 0) {
+                    timerDisplay.classList.add('warning');
+                } else {
+                    timerDisplay.classList.remove('warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    stopTimer();
+                    alert('時間切れ！お疲れ様でした 🎨\n素敵な作品ができましたか？');
+                }
+            }, 1000);
+        }
+        
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            document.getElementById('timerDisplay').classList.remove('warning');
+        }
+        
+        function updateTimerDisplay(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            const display = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            document.getElementById('timerDisplay').textContent = display;
+        }
+    </script>
+</body>
+</html>
