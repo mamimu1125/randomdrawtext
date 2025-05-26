@@ -300,17 +300,26 @@
         @media (max-width: 768px) {
             .container {
                 padding: 0.5rem;
+                justify-content: center;
             }
             
             h1 {
                 font-size: 1.2rem;
-                margin-bottom: 1rem;
+                margin-bottom: 0.5rem;
             }
             
             .category-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 0.8rem;
-                max-width: 100%;
+                gap: 0.6rem;
+                margin-bottom: 1rem;
+            }
+            
+            .difficulty-section {
+                margin-bottom: 1rem;
+            }
+            
+            .difficulty-label {
+                margin-bottom: 0.6rem;
             }
             
             .difficulty-buttons {
@@ -620,9 +629,7 @@
         
         function backToCategories() {
             document.querySelector('.challenge-area').style.display = 'none';
-            document.querySelector('.category-selection').style.display = 'flex';
-            document.querySelector('.category-selection').style.flexDirection = 'column';
-            document.querySelector('.category-selection').style.justifyContent = 'center';
+            document.querySelector('.category-selection').style.display = 'block';
             stopTimer();
         }
         
