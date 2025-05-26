@@ -157,9 +157,6 @@
         
         .challenge-area {
             display: none;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
         }
         
         .topic-container {
@@ -479,6 +476,8 @@
         function startChallenge() {
             document.querySelector('.category-selection').style.display = 'none';
             document.querySelector('.challenge-area').style.display = 'flex';
+            document.querySelector('.challenge-area').style.flexDirection = 'column';
+            document.querySelector('.challenge-area').style.flex = '1';
             getNewTopic();
         }
         
@@ -556,6 +555,8 @@
         function backToCategories() {
             document.querySelector('.challenge-area').style.display = 'none';
             document.querySelector('.category-selection').style.display = 'flex';
+            document.querySelector('.category-selection').style.flexDirection = 'column';
+            document.querySelector('.category-selection').style.justifyContent = 'center';
             stopTimer();
         }
         
